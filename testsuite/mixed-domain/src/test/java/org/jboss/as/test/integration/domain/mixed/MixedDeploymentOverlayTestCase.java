@@ -45,6 +45,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadInfo;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -319,6 +321,10 @@ public class MixedDeploymentOverlayTestCase {
         } catch (ExecutionException e) {
             throw new RuntimeException(e.getCause());
         } catch (TimeoutException e) {
+            ThreadInfo[] info = ManagementFactory.getThreadMXBean().dumpAllThreads(true, false);
+            for (ThreadInfo i : info) {
+                System.out.println(i.toString());
+            }
             future.cancel(true);
             throw new RuntimeException(e);
         }
