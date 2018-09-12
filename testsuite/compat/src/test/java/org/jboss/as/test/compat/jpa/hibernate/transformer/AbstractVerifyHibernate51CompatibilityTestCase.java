@@ -93,6 +93,7 @@ public abstract class AbstractVerifyHibernate51CompatibilityTestCase {
             + "<id name=\"id\">" + "<generator class=\"assigned\"/>" + "</id>"
             + "<property name=\"bitSet\" type=\"org.jboss.as.test.compat.jpa.hibernate.transformer.BitSetType\"/>"
             + "</class>"
+            + "<query name=\"from_student\"><![CDATA[from Student order by id]]></query>"
             + "</hibernate-mapping>";
 
     @Inject
@@ -382,6 +383,32 @@ public abstract class AbstractVerifyHibernate51CompatibilityTestCase {
             checkResults(sfsb.executeQuery(query, 1, 0), 1, 4);
             checkResults(sfsb.executeQuery(query, 1, -1), 1, 4);
             checkResults(sfsb.executeQuery(query, 1, 1), 1, 1);
+        } finally {
+            sfsb.cleanup();
+        }
+    }
+
+    @Test
+    public void testNamedQueryResults() {
+        // setup Configuration and SessionFactory
+        sfsb.setupConfig();
+        try {
+            for (int i = 0; i < 5; i++) {
+                sfsb.createStudent(null, null, null, i);
+            }
+            final String queryName = "from_student";
+            checkResults(sfsb.executeNamedQuery(queryName, null, null), 0, 4);
+            checkResults(sfsb.executeNamedQuery(queryName, 0, null), 0, 4);
+            checkResults(sfsb.executeNamedQuery(queryName, -1, null), 0, 4);
+            checkResults(sfsb.executeNamedQuery(queryName, null, 0), 0, 4);
+            checkResults(sfsb.executeNamedQuery(queryName, null, -1), 0, 4);
+            checkResults(sfsb.executeNamedQuery(queryName, null, 2), 0, 1);
+            checkResults(sfsb.executeNamedQuery(queryName, -1, 0), 0, 4);
+            checkResults(sfsb.executeNamedQuery(queryName, -1, 3), 0, 2);
+            checkResults(sfsb.executeNamedQuery(queryName, 1, null), 1, 4);
+            checkResults(sfsb.executeNamedQuery(queryName, 1, 0), 1, 4);
+            checkResults(sfsb.executeNamedQuery(queryName, 1, -1), 1, 4);
+            checkResults(sfsb.executeNamedQuery(queryName, 1, 1), 1, 1);
         } finally {
             sfsb.cleanup();
         }

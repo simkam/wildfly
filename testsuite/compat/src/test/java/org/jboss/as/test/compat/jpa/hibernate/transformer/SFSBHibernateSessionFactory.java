@@ -190,6 +190,23 @@ public class SFSBHibernateSessionFactory {
 
     }
 
+    public List executeNamedQuery(String queryName, Integer firstResult, Integer maxResults) {
+        Session session = sessionFactory.openSession();
+        try {
+            Query query = session.getNamedQuery(queryName);
+            if ( firstResult != null ) {
+                query.setFirstResult( firstResult );
+            }
+            if ( maxResults != null ) {
+                query.setMaxResults(maxResults);
+            }
+            return query.list();
+        } finally {
+            session.close();
+        }
+
+    }
+
     public Gene createGene(int id, State state) {
         final Gene gene = new Gene();
         gene.setId( id );
