@@ -36,7 +36,7 @@ public class Student {
     private String lastName;
     // address of the student
     private String address;
-
+    private Boolean remote;
     private Integer version;
 
     /**
@@ -136,6 +136,14 @@ public class Student {
 
     public void setVersion(Integer version) {
         this.version = version;
+    }
+
+    public Boolean getRemote() {
+        return remote;
+    }
+
+    public void setRemote(Boolean remote) {
+        this.remote = remote;
     }
 
     /**
