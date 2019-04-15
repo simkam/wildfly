@@ -71,12 +71,17 @@ public class VerifyHibernate51CompatibilityPropertyAndJDSEnabledTransformerTestC
     }
 
     public static class EnableHibernateBytecodeTransformerSetupTask implements ServerSetupTask {
-        private static final ModelNode PROP_ADDR = new ModelNode()
+        private static final ModelNode PROP_ADDR_ENABLETRANSFORMER = new ModelNode()
                 .add("system-property", "Hibernate51CompatibilityTransformer");
-
+        private static final ModelNode PROP_ADDR_TRANSFORMSESSIMPLMETHODS = new ModelNode()
+                .add("system-property","Hibernate51CompatibilityTransformer.sessImplMtds");
         @Override
         public void setup(ManagementClient managementClient, String s) throws Exception {
-            ModelNode op = Operations.createAddOperation(PROP_ADDR);
+            ModelNode op = Operations.createAddOperation(PROP_ADDR_ENABLETRANSFORMER);
+            op.get("value").set("true");
+            managementClient.getControllerClient().execute(op);
+
+            op = Operations.createAddOperation(PROP_ADDR_TRANSFORMSESSIMPLMETHODS);
             op.get("value").set("true");
             managementClient.getControllerClient().execute(op);
             ServerReload.executeReloadAndWaitForCompletion(managementClient.getControllerClient());
@@ -84,7 +89,7 @@ public class VerifyHibernate51CompatibilityPropertyAndJDSEnabledTransformerTestC
 
         @Override
         public void tearDown(ManagementClient managementClient, String s) throws Exception {
-            ModelNode op = Operations.createRemoveOperation(PROP_ADDR);
+            ModelNode op = Operations.createRemoveOperation(PROP_ADDR_ENABLETRANSFORMER);
             managementClient.getControllerClient().execute(op);
             ServerReload.executeReloadAndWaitForCompletion(managementClient.getControllerClient());
         }

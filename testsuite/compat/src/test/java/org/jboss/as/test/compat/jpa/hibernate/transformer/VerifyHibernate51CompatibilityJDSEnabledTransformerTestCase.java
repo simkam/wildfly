@@ -30,12 +30,16 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 
 /**
  * Enable Hibernate bytecode transformer for application with jboss-deployment-structure.xml
  */
 @RunWith(Arquillian.class)
+@Ignore // WFLY-11991 added a StateType#internalNullSafeGet that is not supported by default
+        // Hibernate51TransformSessImplMtds must be set to true with that change, so we only allow
+        // the tests that allow system properties to be specified to run (all of the same tests otherwise run).
 public class VerifyHibernate51CompatibilityJDSEnabledTransformerTestCase
         extends AbstractVerifyHibernate51CompatibilityTestCase {
 
